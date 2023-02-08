@@ -1,7 +1,7 @@
-Name:           license
+Name:           ibm-storage-ceph-license
 Version:        5.3 
 Release:        1%{?dist}
-Summary:        Licenses for IBM storage ceph 
+Summary:        IBM ceph license 
 
 License:       IBM 
 URL:           ibm.com 
@@ -10,43 +10,23 @@ Source0:       license.tar.gz
 BuildRequires: bash 
 
 %description
+there are licenses here
 
-
-%prep
-%autosetup
-
-
-%build
-%configure
-%make_build
-
+%pretrans -p <lua>
+print("Your licenses have been installed in /usr/source/%{name}-%{version}/")
+io.write("Please read the relevant version and agree that you will be bound to its provisions: Type YES or NO ")
+answer = io.read()
+print(answer)
 
 %install
-rm -rf $RPM_BUILD_ROOT
-%make_install
-
+rm -rf %{buildroot}
+mkdir -p  %{buildroot}/usr/source/%{name}-%{version}
+tar zxf %{SOURCE0} --directory %{buildroot}/usr/source/%{name}-%{version}
 
 %files
-%license add-license-file-here
-%doc add-docs-here
-
-
-%pretrans
-
-if [ ${ACCEPT_EULA} != "y" ]
-then
-  echo "The license terms for this product can be downloaded from"
-  echo "https://licr.dal1a.cirrus.ibm.com/ui/#/licensefiles/L-KDIY-CJHJCJ"
-  echo "The license terms are available offline by installing the ibm-legal-mumbojumbo package"
-  echo "and navigating to /var/lib/docs/legalstuffs"
-  echo
-  read "Do you accept the license terms? (Enter YES or NO)" ANS
-  if [ ${ANS} != "YES" ];
-  then
-    exit
-  fi
-fi
+/usr/source/%{name}-%{version}/English.txt
+/usr/source/%{name}-%{version}/Greek.txt
 
 %changelog
-* Mon Feb  6 2023 vagrant
+* Tue Feb  7 2023 Christina Meno <Christina.Meno@ibm.com>
 - 
