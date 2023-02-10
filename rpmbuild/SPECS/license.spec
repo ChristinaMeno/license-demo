@@ -25,9 +25,10 @@ io.write("Please read the relevant version and agree that you will be bound to i
 answer = io.read()
 if answer == "NO" then
   os.remove("/usr/share/%{name}-%{version}/license/accept")
-  print("File deleted successfully.")
+  print("License not accepted. If you want to accept the license. touch " .. path .. "/accept")
+  print("Then proceed with install")
 else
-  print("File not deleted.")
+  print("License accepted. Proceed with install")
 end
 
 %install
