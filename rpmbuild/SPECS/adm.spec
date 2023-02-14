@@ -17,7 +17,7 @@ The adm package is an example package for demonstration purposes.
 
 %pretrans 
 if [ -z "$ACCEPT_EULA" ]; then
-	if [ ! -f /usr/share/ibm-storage-ceph-license-5.3/accept ]; then
+	if [ ! -f /usr/share/ibm-storage-ceph-license-5.3/license/accept ]; then
 	  echo "The license agreement has not been accepted. Exiting."
 	  exit 1
 	else
