@@ -7,28 +7,46 @@ License:       IBM
 URL:           ibm.com 
 Source0:       license.tar.gz
 
+BuildArch: noarch
 BuildRequires: bash 
 
 %description
 there are licenses here
 
 %post -p <lua>
-license = "L-KDIY-CJHJCJ"
-path = "/usr/share/%{name}-%{version}/" .. "license/" .. license
-print("Your licenses have been installed in " .. path)
-locale = io.popen("locale | grep LANG= | cut -d'=' -f2 | cut -d'_' -f1"):read("*all")
-print("System locale: " .. locale)
-lpath= path .. "/UTF8/LA_" .. locale
-locale = io.popen("less " .. lpath):read("*all")
-print(locale)
-io.write("Please read the relevant version and agree that you will be bound to its provisions: Type YES or NO ")
-answer = io.read()
-if answer == "NO" then
-  os.remove("/usr/share/%{name}-%{version}/license/accept")
-  print("License not accepted. If you want to accept the license. touch " .. path .. "/accept")
-  print("Then proceed with install")
-else
-  print("License accepted. Proceed with install")
+accept_eula = os.getenv("ACCEPT_EULA")
+if accept_eula then
+  accept_eula = accept_eula:lower():gsub("\n", "")
+end
+
+
+if not (accept_eula == "yes" or accept_eula == "y") then
+	license = "L-KDIY-CJHJCJ"
+	path = "/usr/share/%{name}-%{version}/" .. "license/" .. license
+	print("\nYour licenses have been installed in " .. path)
+	locale = io.popen("locale | grep LANG= | cut -d'=' -f2 | cut -d'_' -f1"):read("*all"):gsub("\n", "")
+	print("System locale: " .. locale)
+	lpath= path .. "/UTF8/LA_" .. locale
+	agreement, err = io.open(lpath, 'r')
+	if agreement then
+	  print(agreement:read("a"))
+	else
+	  print(err)
+	end
+
+	io.write("\nYou can read this license in another language at " .. path)
+	io.write("\nAccept these provisions: Type YES or NO ")
+	answer = io.read():lower()
+
+	if not (answer == "yes" or answer == "y") then
+	  os.remove("/usr/share/%{name}-%{version}/license/accept")
+	  print("\nLicense not accepted.")
+	  print("\nWhen you are ready to accept the license. run `sudo touch " .. path .. "/accept`")
+	  print("\nThen proceed with install")
+	else
+	  print("\nLicense accepted.") 
+	  print("\nProceed with install")
+	end
 end
 
 %install
